@@ -14,7 +14,12 @@ return new class extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->foreignId('current_tenant_id')->nullable()->references('id')->on('tenants');
+
+            $table->foreignId('current_tenant_id')
+                ->nullable()
+                ->references('id')
+                ->on('tenants');
+
         });
     }
 
