@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Tenant;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -62,6 +63,11 @@ class AuthController extends Controller
             $validator->validated(),
             ['password' => bcrypt($request->password)]
         ));
+
+        $tenant = Tenant::create(['name' => $user->name]);
+        $tenant->users()->attach($user->id);
+        $user->update(['current_tenant_id' => $tenant->id]);
+
         return response()->json([
             'message' => 'User successfully registered',
             'user' => $user

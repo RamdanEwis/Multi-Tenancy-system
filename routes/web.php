@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
-Route::group(['middleware' => 'auth'], function() {
+/*Route::group(['middleware' => 'auth'], function() {
     Route::view('/dashboard', 'dashboard')->name('dashboard');
 
     Route::resource('tenants', \App\Http\Controllers\TenantController::class);
@@ -26,7 +26,7 @@ Route::group(['middleware' => 'auth'], function() {
         ->name('tenants.change');
 
 });
-
+*/
 
 Auth::routes();
 

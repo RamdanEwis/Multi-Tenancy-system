@@ -61,4 +61,12 @@ class User extends Authenticatable implements JWTSubject
     public function getJWTCustomClaims() {
         return [];
     }
+    public function tenants()
+    {
+        return $this->belongsToMany(Tenant::class);
+    }
+    public function products()
+    {
+        return $this->belongsToMany(Product::class,'products','user_id');
+    }
 }

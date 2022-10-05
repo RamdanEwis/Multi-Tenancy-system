@@ -6,33 +6,37 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Product\StoreRequest;
 use App\Http\Requests\Product\UpdateRequest;
 use App\Models\Product;
+use App\Models\User;
+use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Tymon\JWTAuth\Facades\JWTAuth;
+use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
     use ApiResponseTrait;
 
-    protected $user;
-
-    public function __construct()
-    {
-        $this->user = JWTAuth::parseToken()->authenticate();
-    }
     /**
      * Display a listing of the resource.
      *
-     * @return Response
+     * @return never|ResponseFactory|Response|
      */
     public function index()
     {
-        $products = Product::get();
-        return $this->apiResponse($products, '', 200);
+
+
+        //Product::where('user_id',auth('api')->user()->id)->findOrFill(auth('api')->current_tenant_id)->get();
+        $products =  DB::table('products')
+            ->where('user_id',auth('api')->user()->id)
+            ->where('tenant_id',auth('api')->user()->current_tenant_id)
+            ->get();
+            return $this->apiResponse($products,'success',200);
+
     }
     /**
      * Show the form for creating a new resource.
-     *
+     *->
      * @return void
      */
     public function create()
@@ -94,10 +98,11 @@ class ProductController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
+     * @param $products
      * @return Response
      */
-    public function destroy($id)
+    public function destroy(Product $products)
     {
                $products->delete();
         return $this->apiResponse(null,'delete has success',200);

@@ -33,7 +33,10 @@ Route::group([
 Route::group([
     'middleware' => 'auth:api',
 ], function () {
+
+    Route::get('/tenants/registerTenant/{id}',[TenantController::class,'register'])->name('tenants.regester');
     Route::resource('/tenants',TenantController::class);
     Route::resource('/products', ProductController::class);
+
 });
 

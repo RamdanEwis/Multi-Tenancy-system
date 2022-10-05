@@ -6,9 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Tenant\StoreRequest;
 use App\Http\Requests\Tenant\UpdateRequest;
 use App\Models\Tenant;
+use App\Models\User;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 
 class TenantController extends Controller
 {
@@ -20,8 +22,12 @@ class TenantController extends Controller
      */
     public function index()
     {
-        $tenant = Tenant::get();
-        return $this->apiResponse($tenant,'',200);
+
+        if (auth()->user()->tenants()->count() >= 1) {
+            $tenant = auth()->user()->tenants;
+            return $this->apiResponse($tenant,'success',200);
+        }
+        return $this->apiResponse(null,'The User Not exist any tenants',400);
     }
 
     /**
@@ -83,6 +89,20 @@ class TenantController extends Controller
     {
         $tenant->update($request->validated());
         return $this->apiResponse($tenant,'Update has success',200);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param Request $id
+     * @return ResponseFactory|Response
+     */
+    public function register($id)
+    {
+          $tenant =  DB::table('tenant_user')->insert(
+            ['user_id' => auth()->user()->id,'tenant_id' => $id ]
+        );
+        return $this->apiResponse($tenant,'register has success',200);
     }
 
     /**
